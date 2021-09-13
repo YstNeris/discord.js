@@ -1,6 +1,6 @@
 'use strict';
 
-const { Collection } = require('@discordjs/collection');
+const Collection = require('../util/Collection');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const RequestHandler = require('./RequestHandler');

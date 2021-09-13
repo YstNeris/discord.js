@@ -19,7 +19,7 @@ import {
   underscore,
   userMention,
 } from '@discordjs/builders';
-import { Collection } from '@discordjs/collection';
+import { Collection } from '@discordoo/collection';
 import { ChildProcess } from 'child_process';
 import {
   APIActionRowComponent,
@@ -519,7 +519,7 @@ export class ClientVoiceManager {
   public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
 }
 
-export { Collection } from '@discordjs/collection';
+export { Collection } from '@discordoo/collection';
 
 export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmitter {
   public constructor(client: Client, options?: CollectorOptions<[V, ...F]>);

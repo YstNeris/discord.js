@@ -1,6 +1,6 @@
 'use strict';
 
-const { Collection } = require('@discordjs/collection');
+const Collection = require('../util/Collection');
 const { _cleanupSymbol } = require('./Constants.js');
 const { TypeError } = require('../errors/DJSError.js');
 

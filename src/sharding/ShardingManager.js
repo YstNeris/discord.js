@@ -3,7 +3,7 @@
 const EventEmitter = require('events');
 const fs = require('fs');
 const path = require('path');
-const { Collection } = require('@discordjs/collection');
+const Collection = require('../util/Collection');
 const Shard = require('./Shard');
 const { Error, TypeError, RangeError } = require('../errors');
 const Util = require('../util/Util');

@@ -181,7 +181,7 @@ class Options extends null {
    * });
    */
   static cacheWithLimits(settings = {}) {
-    const { Collection } = require('@discordjs/collection');
+    const Collection = require('./Collection');
     const LimitedCollection = require('./LimitedCollection');
 
     return manager => {
@@ -216,7 +216,7 @@ class Options extends null {
    * @returns {CacheFactory}
    */
   static cacheEverything() {
-    const { Collection } = require('@discordjs/collection');
+    const Collection = require('./Collection');
     return () => new Collection();
   }
 

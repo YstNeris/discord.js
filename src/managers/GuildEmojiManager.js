@@ -1,6 +1,6 @@
 'use strict';
 
-const { Collection } = require('@discordjs/collection');
+const Collection = require('../util/Collection');
 const BaseGuildEmojiManager = require('./BaseGuildEmojiManager');
 const { TypeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');

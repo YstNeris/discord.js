@@ -1,6 +1,6 @@
 'use strict';
 
-const { Collection } = require('@discordjs/collection');
+const Collection = require('../util/Collection');
 const { ChannelTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const EventEmitter = require('events');
-const { Collection } = require('@discordjs/collection');
+const Collection = require('../../util/Collection');
 const { RPCErrorCodes } = require('discord-api-types/v9');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
