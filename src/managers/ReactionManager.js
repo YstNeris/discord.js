@@ -61,6 +61,16 @@ class ReactionManager extends CachedManager {
     await this.client.api.channels(this.message.channelId).messages(this.message.id).reactions.delete();
     return this.message;
   }
+
+  forge(id) {
+    const emoji = {};
+    if (isNaN(id)) {
+      emoji.name = id;
+    } else {
+      emoji.id = id;
+    }
+    return this._add({ emoji }, false);
+  }
 }
 
 module.exports = ReactionManager;

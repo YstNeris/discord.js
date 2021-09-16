@@ -1,28 +1,19 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Util = require('../../util/Util');
 
 class GuildRoleDeleteAction extends Action {
   handle(data) {
     const client = this.client;
-    const guild = client.guilds.cache.get(data.guild_id);
-    let role;
-
-    if (guild) {
-      role = guild.roles.cache.get(data.role_id);
-      if (role) {
-        guild.roles.cache.delete(data.role_id);
-        role.deleted = true;
-        /**
-         * Emitted whenever a guild role is deleted.
-         * @event Client#roleDelete
-         * @param {Role} role The role that was deleted
-         */
-        client.emit(Events.GUILD_ROLE_DELETE, role);
-      }
+    const guild = Util.getOrCreateGuild(client, data.guild_id, data.shardId);
+    let role = guild.roles.cache.get(data.role_id) ?? null;
+    if (!role) {
+      role = guild.roles._add({ id: data.role_id, permissions: 0 }, false);
+      role.partial = true;
     }
-
+    guild.roles.cache.delete(data.role_id);
+    role.deleted = true;
     return { role };
   }
 }

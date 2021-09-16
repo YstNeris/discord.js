@@ -213,6 +213,10 @@ class ApplicationCommandManager extends CachedManager {
       default_permission: command.defaultPermission,
     };
   }
+
+  forge(id) {
+    return this._add({ id }, false);
+  }
 }
 
 module.exports = ApplicationCommandManager;

@@ -215,7 +215,7 @@ class RoleManager extends CachedManager {
    * @readonly
    */
   get everyone() {
-    return this.cache.get(this.guild.id);
+    return this.cache.get(this.guild.id) ?? this._add({ id: this.guild.id, permissions: 0 }, false);
   }
 
   /**
@@ -234,6 +234,10 @@ class RoleManager extends CachedManager {
    */
   get highest() {
     return this.cache.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev), this.cache.first());
+  }
+
+  forge(id) {
+    return this._add({ id }, false);
   }
 }
 

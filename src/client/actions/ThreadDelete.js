@@ -2,28 +2,24 @@
 
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
+const Util = require('../../util/Util');
 
 class ThreadDeleteAction extends Action {
   handle(data) {
     const client = this.client;
-    const thread = client.channels.cache.get(data.id);
-
-    if (thread) {
-      client.channels._remove(thread.id);
-      thread.deleted = true;
-      for (const message of thread.messages.cache.values()) {
-        message.deleted = true;
-      }
-
-      /**
-       * Emitted whenever a thread is deleted.
-       * @event Client#threadDelete
-       * @param {ThreadChannel} thread The thread that was deleted
-       */
-      client.emit(Events.THREAD_DELETE, thread);
+    let channel = client.channels.cache.get(data.id);
+    if (!channel) {
+      const guild = Util.getOrCreateGuild(client, data.guild_id, data.shardId);
+      channel = client.channels._add(data, guild, { cache: false, allowUnknownGuild: true });
+      Util.makePartial(channel);
     }
-
-    return { thread };
+    for (const message of channel.messages.cache.values()) {
+      message.deleted = true;
+    }
+    client.channels._remove(channel.id);
+    channel.deleted = true;
+    client.emit(Events.THREAD_DELETE, channel);
+    return { channel };
   }
 }
 

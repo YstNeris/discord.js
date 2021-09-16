@@ -1,21 +1,13 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Util = require('../../util/Util');
 
 class ChannelCreateAction extends Action {
   handle(data) {
     const client = this.client;
-    const existing = client.channels.cache.has(data.id);
-    const channel = client.channels._add(data);
-    if (!existing && channel) {
-      /**
-       * Emitted whenever a guild channel is created.
-       * @event Client#channelCreate
-       * @param {GuildChannel} channel The channel that was created
-       */
-      client.emit(Events.CHANNEL_CREATE, channel);
-    }
+    const guild = data.guild_id ? Util.getOrCreateGuild(client, data.guild_id, data.shardId) : void 0;
+    const channel = client.channels._add(data, guild);
     return { channel };
   }
 }

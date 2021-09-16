@@ -1,31 +1,22 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
 
 class GuildUpdateAction extends Action {
   handle(data) {
     const client = this.client;
-
-    const guild = client.guilds.cache.get(data.id);
+    let guild = client.guilds.cache.get(data.id);
+    let old;
     if (guild) {
-      const old = guild._update(data);
-      /**
-       * Emitted whenever a guild is updated - e.g. name change.
-       * @event Client#guildUpdate
-       * @param {Guild} oldGuild The guild before the update
-       * @param {Guild} newGuild The guild after the update
-       */
-      client.emit(Events.GUILD_UPDATE, old, guild);
-      return {
-        old,
-        updated: guild,
-      };
+      old = guild._update(data);
+    } else {
+      guild = client.guilds._add(data);
+      old = client.guilds._add({ id: data.id, shardId: data.shardId }, false);
+      old.partial = true;
     }
-
     return {
-      old: null,
-      updated: null,
+      old,
+      updated: guild,
     };
   }
 }

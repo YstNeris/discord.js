@@ -1,54 +1,37 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events, VoiceBasedChannelTypes } = require('../../util/Constants');
-const { PartialTypes } = require('../../util/Constants');
-
-/*
-{ user_id: 'id',
-     message_id: 'id',
-     emoji: { name: '�', id: null },
-     channel_id: 'id',
-     // If originating from a guild
-     guild_id: 'id',
-     member: { ..., user: { ... } } }
-*/
+const Util = require('../../util/Util');
 
 class MessageReactionAdd extends Action {
   handle(data) {
-    if (!data.emoji) return false;
-
-    const user = this.getUserFromMember(data);
-    if (!user) return false;
-
-    // Verify channel
-    const channel = this.getChannel(data);
-    if (!channel || VoiceBasedChannelTypes.includes(channel.type)) return false;
-
-    // Verify message
-    const message = this.getMessage(data, channel);
-    if (!message) return false;
-
-    // Verify reaction
-    if (message.partial && !this.client.options.partials.includes(PartialTypes.REACTION)) return false;
-    const existing = message.reactions.cache.get(data.emoji.id ?? data.emoji.name);
-    if (existing?.users.cache.has(user.id)) return { message, reaction: existing, user };
-    const reaction = message.reactions._add({
-      emoji: data.emoji,
-      count: message.partial ? null : 0,
-      me: user.id === this.client.user.id,
-    });
-    if (!reaction) return false;
+    const client = this.client;
+    let channel = data.channel;
+    if (!channel) {
+      const guild = data.guild_id ? Util.getOrCreateGuild(client, data.guild_id, data.shardId) : void 0;
+      channel = Util.getOrCreateChannel(client, data.channel_id, guild);
+    }
+    let user = data.user || client.users.cache.get(data.user_id);
+    if (!user) {
+      if (data.member?.user) {
+        user = client.users._add(data.member.user);
+      } else {
+        user = client.users._add({ id: data.user_id }, false); // has built in partial
+      }
+    }
+    const message = data.message || Util.getOrCreateMessage(channel, data.message_id);
+    const reaction =
+      message.reactions.cache.get(data.emoji.id ?? decodeURIComponent(data.emoji.name)) ||
+      message.reactions._add({
+        emoji: data.emoji,
+        count: message.partial ? null : 0,
+        me: user.id === client.user.id,
+      });
     reaction._add(user);
-    /**
-     * Emitted whenever a reaction is added to a cached message.
-     * @event Client#messageReactionAdd
-     * @param {MessageReaction} messageReaction The reaction object
-     * @param {User} user The user that applied the guild or reaction emoji
-     */
-    this.client.emit(Events.MESSAGE_REACTION_ADD, reaction, user);
-
-    return { message, reaction, user };
+    return {
+      reaction,
+      user,
+    };
   }
 }
 

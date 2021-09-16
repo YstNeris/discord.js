@@ -133,6 +133,10 @@ class Channel extends Base {
   }
 
   static create(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
+    if (data instanceof this) {
+      return data;
+    }
+
     CategoryChannel ??= require('./CategoryChannel');
     DMChannel ??= require('./DMChannel');
     NewsChannel ??= require('./NewsChannel');

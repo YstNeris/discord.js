@@ -337,6 +337,10 @@ class Message extends Base {
     } else {
       this.interaction ??= null;
     }
+
+    if (data.member && !this.member && this.author) {
+      this._member = this.guild.members._add(Object.assign(data.member, { user: this.author }));
+    }
   }
 
   _update(data, partial = false) {
@@ -351,7 +355,7 @@ class Message extends Base {
    * @readonly
    */
   get channel() {
-    return this.client.channels.resolve(this.channelId);
+    return Util.getOrCreateChannel(this.client, this.channelId, this.guild);
   }
 
   /**
@@ -370,7 +374,14 @@ class Message extends Base {
    * @readonly
    */
   get member() {
-    return this.guild?.members.resolve(this.author) ?? null;
+    if (!this.guild) {
+      return null;
+    }
+    const id = this.author?.id ?? this._member?.id;
+    if (!id) {
+      return null;
+    }
+    return this.guild.members.cache.get(id) ?? this._member ?? null;
   }
 
   /**
@@ -397,7 +408,7 @@ class Message extends Base {
    * @readonly
    */
   get guild() {
-    return this.client.guilds.resolve(this.guildId) ?? this.channel?.guild ?? null;
+    return this.guildId ? Util.getOrCreateGuild(this.client, this.guildId) : null;
   }
 
   /**

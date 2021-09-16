@@ -159,6 +159,10 @@ class PermissionOverwriteManager extends CachedManager {
     await this.client.api.channels(this.channel.id).permissions(userOrRoleId).delete({ reason });
     return this.channel;
   }
+
+  forge(id, type) {
+    return this._add({ id, type, allow: 0, deny: 0 });
+  }
 }
 
 module.exports = PermissionOverwriteManager;

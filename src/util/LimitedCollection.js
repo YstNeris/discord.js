@@ -97,6 +97,10 @@ class LimitedCollection extends Collection {
     return super.set(key, value);
   }
 
+  forceSet(key, value) {
+    return Object.getPrototypeOf(Object.getPrototypeOf(this)).set.call(this, key, value);
+  }
+
   /**
    * Options for generating a filter function based on lifetime
    * @typedef {Object} LifetimeFilterOptions

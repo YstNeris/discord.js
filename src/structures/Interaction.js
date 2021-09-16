@@ -3,6 +3,7 @@
 const Base = require('./Base');
 const { InteractionTypes, MessageComponentTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
+const Util = require('../util/Util');
 
 /**
  * Represents an interaction.
@@ -93,7 +94,7 @@ class Interaction extends Base {
    * @readonly
    */
   get channel() {
-    return this.client.channels.cache.get(this.channelId) ?? null;
+    return this.channelId ? Util.getOrCreateChannel(this.client, this.channelId, this.guild) : null;
   }
 
   /**
@@ -102,7 +103,7 @@ class Interaction extends Base {
    * @readonly
    */
   get guild() {
-    return this.client.guilds.cache.get(this.guildId) ?? null;
+    return this.guildId ? Util.getOrCreateGuild(this.client, this.guildId) : null;
   }
 
   /**

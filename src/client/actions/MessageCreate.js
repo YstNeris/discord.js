@@ -1,42 +1,16 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
-
-let deprecationEmitted = false;
+const Util = require('../../util/Util');
 
 class MessageCreateAction extends Action {
   handle(data) {
     const client = this.client;
-    const channel = this.getChannel(data);
-    if (channel) {
-      const existing = channel.messages.cache.get(data.id);
-      if (existing) return { message: existing };
-      const message = channel.messages._add(data);
-      channel.lastMessageId = data.id;
-
-      /**
-       * Emitted whenever a message is created.
-       * @event Client#messageCreate
-       * @param {Message} message The created message
-       */
-      client.emit(Events.MESSAGE_CREATE, message);
-
-      /**
-       * Emitted whenever a message is created.
-       * @event Client#message
-       * @param {Message} message The created message
-       * @deprecated Use {@link Client#messageCreate} instead
-       */
-      if (client.emit('message', message) && !deprecationEmitted) {
-        deprecationEmitted = true;
-        process.emitWarning('The message event is deprecated. Use messageCreate instead', 'DeprecationWarning');
-      }
-
-      return { message };
-    }
-
-    return {};
+    const guild = data.guild_id ? Util.getOrCreateGuild(client, data.guild_id, data.shardId) : void 0;
+    const channel = Util.getOrCreateChannel(client, data.channel_id, guild);
+    channel.lastMessageId = data.id;
+    const message = channel.messages._add(data);
+    return { message };
   }
 }
 

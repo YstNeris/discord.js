@@ -420,6 +420,20 @@ class Guild extends AnonymousGuild {
         stickers: data.stickers,
       });
     }
+
+    if (data.members) {
+      const me = data.members.find(member => member.user.id === this.client.user.id);
+      if (me && !this.me) {
+        this.members.cache.forceSet(me.user.id, this.members._add(me));
+      }
+    }
+
+    if (data.roles) {
+      const everyone = data.roles.find(role => role.id === this.id);
+      if (everyone && !this.roles.cache.has(everyone.id)) {
+        this.roles.cache.forceSet(everyone.id, this.roles._add(everyone));
+      }
+    }
   }
 
   /**

@@ -278,6 +278,10 @@ class GuildManager extends CachedManager {
     const data = await this.client.api.users('@me').guilds.get({ query: options });
     return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
   }
+
+  forge(id) {
+    return this._add({ id }, false);
+  }
 }
 
 module.exports = GuildManager;

@@ -205,6 +205,17 @@ class GuildChannelManager extends CachedManager {
     const raw = await this.client.api.guilds(this.guild.id).threads.active.get();
     return ThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
   }
+
+  forge(id, type = ChannelTypes.GUILD_TEXT) {
+    return this.client.channels._add(
+      {
+        id,
+        type: Discord.Constants.ChannelTypes[type.toUpperCase()],
+      },
+      this.guild,
+      { cache: false, allowUnknownGuild: true },
+    );
+  }
 }
 
 module.exports = GuildChannelManager;

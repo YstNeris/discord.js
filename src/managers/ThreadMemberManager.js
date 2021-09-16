@@ -104,6 +104,10 @@ class ThreadMemberManager extends CachedManager {
       return col.set(member.id, member);
     }, new Collection());
   }
+
+  forge(user_id) {
+    return this._add({ user_id });
+  }
 }
 
 module.exports = ThreadMemberManager;

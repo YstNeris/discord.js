@@ -1,23 +1,25 @@
 'use strict';
 
 const Action = require('./Action');
+const Util = require('../../util/Util');
 
 class MessageUpdateAction extends Action {
   handle(data) {
-    const channel = this.getChannel(data);
-    if (channel) {
-      const { id, channel_id, guild_id, author, timestamp, type } = data;
-      const message = this.getMessage({ id, channel_id, guild_id, author, timestamp, type }, channel);
-      if (message) {
-        const old = message._update(data, true);
-        return {
-          old,
-          updated: message,
-        };
-      }
+    const client = this.client;
+    const guild = data.guild_id ? Util.getOrCreateGuild(client, data.guild_id, data.shardId) : void 0;
+    const channel = Util.getOrCreateChannel(client, data.channel_id, guild);
+    let message = channel.messages.cache.get(data.id);
+    let old;
+    if (message) {
+      old = message._update(data, true);
+    } else {
+      message = channel.messages._add(data);
+      old = channel.messages._add({ id: data.id }, false); // has built in partial
     }
-
-    return {};
+    return {
+      old,
+      updated: message,
+    };
   }
 }
 

@@ -1,26 +1,28 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events, VoiceBasedChannelTypes } = require('../../util/Constants');
+const Util = require('../../util/Util');
 
 class MessageReactionRemoveEmoji extends Action {
   handle(data) {
-    const channel = this.getChannel(data);
-    if (!channel || VoiceBasedChannelTypes.includes(channel.type)) return false;
-
-    const message = this.getMessage(data, channel);
-    if (!message) return false;
-
-    const reaction = this.getReaction(data, message);
-    if (!reaction) return false;
-    if (!message.partial) message.reactions.cache.delete(reaction.emoji.id ?? reaction.emoji.name);
-
-    /**
-     * Emitted when a bot removes an emoji reaction from a cached message.
-     * @event Client#messageReactionRemoveEmoji
-     * @param {MessageReaction} reaction The reaction that was removed
-     */
-    this.client.emit(Events.MESSAGE_REACTION_REMOVE_EMOJI, reaction);
+    const client = this.client;
+    const guild = data.guild_id ? Util.getOrCreateGuild(client, data.guild_id, data.shardId) : void 0;
+    const channel = Util.getOrCreateChannel(client, data.channel_id, guild);
+    const message = Util.getOrCreateMessage(channel, data.message_id);
+    let reaction = message.reactions.cache.get(data.emoji.id ?? decodeURIComponent(data.emoji.name));
+    if (!reaction) {
+      reaction = message.reactions._add(
+        {
+          emoji: data.emoji,
+          count: null,
+          me: null,
+        },
+        false,
+      );
+    }
+    if (!message.partial) {
+      message.reactions.cache.delete(reaction.emoji.id ?? reaction.emoji.name);
+    }
     return { reaction };
   }
 }

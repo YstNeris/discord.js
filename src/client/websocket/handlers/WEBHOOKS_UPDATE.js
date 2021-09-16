@@ -1,5 +1,6 @@
 'use strict';
 
-module.exports = (client, packet) => {
-  client.actions.WebhooksUpdate.handle(packet.d);
+module.exports = (client, { d: data }, shard) => {
+  data.shardId = shard.id;
+  client.actions.WebhooksUpdate.handle(data);
 };

@@ -1,5 +1,6 @@
 'use strict';
 
-module.exports = (client, packet) => {
-  client.actions.PresenceUpdate.handle(packet.d);
+module.exports = (client, { d: data }, shard) => {
+  data.shardId = shard.id;
+  client.actions.PresenceUpdate.handle(data);
 };

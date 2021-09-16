@@ -176,6 +176,10 @@ class GuildBanManager extends CachedManager {
     await this.client.api.guilds(this.guild.id).bans(id).delete({ reason });
     return this.client.users.resolve(user);
   }
+
+  forge(id) {
+    return this._add({ user: { id } }, false);
+  }
 }
 
 module.exports = GuildBanManager;

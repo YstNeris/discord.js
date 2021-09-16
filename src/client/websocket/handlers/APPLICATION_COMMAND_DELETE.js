@@ -1,19 +1,17 @@
 'use strict';
 
 const { Events } = require('../../../util/Constants');
+const Util = require('../../../util/Util');
 
-module.exports = (client, { d: data }) => {
-  const commandManager = data.guild_id ? client.guilds.cache.get(data.guild_id)?.commands : client.application.commands;
-  if (!commandManager) return;
-
-  const isOwn = data.application_id === client.application.id;
-  const command = commandManager._add(data, isOwn);
-  if (isOwn) commandManager.cache.delete(data.id);
-
-  /**
-   * Emitted when a guild application command is deleted.
-   * @event Client#applicationCommandDelete
-   * @param {ApplicationCommand} command The command which was deleted
-   */
+module.exports = (client, { d: data }, shard) => {
+  let command;
+  if (data.guild_id) {
+    const guild = Util.getOrCreateGuild(client, data.guild_id, shard.id);
+    command = guild.commands._add(data);
+    guild.commands.cache.delete(data.id);
+  } else {
+    command = client.application.commands._add(data);
+    client.application.commands.cache.delete(data.id);
+  }
   client.emit(Events.APPLICATION_COMMAND_DELETE, command);
 };

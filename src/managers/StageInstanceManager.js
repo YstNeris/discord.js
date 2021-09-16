@@ -151,6 +151,10 @@ class StageInstanceManager extends CachedManager {
 
     await this.client.api('stage-instances', channelId).delete();
   }
+
+  forge(id) {
+    return this._add({ id }, false);
+  }
 }
 
 module.exports = StageInstanceManager;

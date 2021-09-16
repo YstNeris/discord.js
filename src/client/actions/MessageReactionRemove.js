@@ -1,44 +1,35 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events, VoiceBasedChannelTypes } = require('../../util/Constants');
-
-/*
-{ user_id: 'id',
-     message_id: 'id',
-     emoji: { name: '�', id: null },
-     channel_id: 'id',
-     guild_id: 'id' }
-*/
+const Util = require('../../util/Util');
 
 class MessageReactionRemove extends Action {
   handle(data) {
-    if (!data.emoji) return false;
-
-    const user = this.getUser(data);
-    if (!user) return false;
-
-    // Verify channel
-    const channel = this.getChannel(data);
-    if (!channel || VoiceBasedChannelTypes.includes(channel.type)) return false;
-
-    // Verify message
-    const message = this.getMessage(data, channel);
-    if (!message) return false;
-
-    // Verify reaction
-    const reaction = this.getReaction(data, message, user);
-    if (!reaction) return false;
+    const client = this.client;
+    const guild = data.guild_id ? Util.getOrCreateGuild(client, data.guild_id, data.shardId) : void 0;
+    const channel = Util.getOrCreateChannel(client, data.channel_id, guild);
+    let user = client.users.cache.get(data.user_id);
+    if (!user) {
+      user = client.users._add({ id: data.user_id }, false); // has built in partial
+    }
+    const message = Util.getOrCreateMessage(channel, data.message_id);
+    let reaction = message.reactions.cache.get(data.emoji.id ?? decodeURIComponent(data.emoji.name));
+    if (!reaction) {
+      reaction = message.reactions._add(
+        {
+          emoji: data.emoji,
+          count: null,
+          me: user.id === client.user.id,
+        },
+        false,
+      );
+    }
     reaction._remove(user);
-    /**
-     * Emitted whenever a reaction is removed from a cached message.
-     * @event Client#messageReactionRemove
-     * @param {MessageReaction} messageReaction The reaction object
-     * @param {User} user The user whose emoji or reaction emoji was removed
-     */
-    this.client.emit(Events.MESSAGE_REACTION_REMOVE, reaction, user);
-
-    return { message, reaction, user };
+    return {
+      message,
+      reaction,
+      user,
+    };
   }
 }
 

@@ -100,6 +100,10 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
     for (const emoji of data) emojis.set(emoji.id, this._add(emoji, cache));
     return emojis;
   }
+
+  forge(id) {
+    return this._add({ id }, false);
+  }
 }
 
 module.exports = GuildEmojiManager;

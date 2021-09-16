@@ -2,7 +2,7 @@
 
 const Action = require('./Action');
 const DMChannel = require('../../structures/DMChannel');
-const { Events } = require('../../util/Constants');
+const Util = require('../../util/Util');
 
 class ChannelDeleteAction extends Action {
   constructor(client) {
@@ -12,24 +12,15 @@ class ChannelDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
-    const channel = client.channels.cache.get(data.id);
-
-    if (channel) {
-      client.channels._remove(channel.id);
-      channel.deleted = true;
-      if (channel.messages && !(channel instanceof DMChannel)) {
-        for (const message of channel.messages.cache.values()) {
-          message.deleted = true;
-        }
+    const guild = data.guild_id ? Util.getOrCreateGuild(client, data.guild_id, data.shardId) : void 0;
+    const channel = client.channels.cache.get(data.id) || client.channels._add(data, guild);
+    if (channel.messages?.cache.size && !(channel instanceof DMChannel)) {
+      for (const message of channel.messages.cache.values()) {
+        message.deleted = true;
       }
-      /**
-       * Emitted whenever a channel is deleted.
-       * @event Client#channelDelete
-       * @param {DMChannel|GuildChannel} channel The channel that was deleted
-       */
-      client.emit(Events.CHANNEL_DELETE, channel);
     }
-
+    channel.deleted = true;
+    client.channels._remove(channel.id);
     return { channel };
   }
 }

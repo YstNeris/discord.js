@@ -2,28 +2,24 @@
 
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
+const Util = require('../../util/Util');
 
 class StageInstanceUpdateAction extends Action {
   handle(data) {
     const client = this.client;
-    const channel = this.getChannel(data);
-
-    if (channel) {
-      const oldStageInstance = channel.guild.stageInstances.cache.get(data.id)?._clone() ?? null;
-      const newStageInstance = channel.guild.stageInstances._add(data);
-
-      /**
-       * Emitted whenever a stage instance gets updated - e.g. change in topic or privacy level
-       * @event Client#stageInstanceUpdate
-       * @param {?StageInstance} oldStageInstance The stage instance before the update
-       * @param {StageInstance} newStageInstance The stage instance after the update
-       */
-      client.emit(Events.STAGE_INSTANCE_UPDATE, oldStageInstance, newStageInstance);
-
-      return { oldStageInstance, newStageInstance };
+    const guild = Util.getOrCreateGuild(client, data.guild_id, data.shardId);
+    const channel = Util.getOrCreateChannel(client, data.channel_id, guild);
+    let oldStageInstance = channel.guild.stageInstances.cache.get(data.id)?._clone();
+    if (!oldStageInstance) {
+      oldStageInstance = channel.guild.stageInstances._add({ id: data.id }, false);
+      oldStageInstance.partial = true;
     }
-
-    return {};
+    const newStageInstance = channel.guild.stageInstances._add(data);
+    client.emit(Events.STAGE_INSTANCE_UPDATE, oldStageInstance, newStageInstance);
+    return {
+      oldStageInstance,
+      newStageInstance,
+    };
   }
 }
 

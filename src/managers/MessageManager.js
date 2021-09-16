@@ -221,6 +221,10 @@ class MessageManager extends CachedManager {
     for (const message of data) messages.set(message.id, this._add(message, cache));
     return messages;
   }
+
+  forge(id) {
+    return this._add({ id }, false);
+  }
 }
 
 module.exports = MessageManager;

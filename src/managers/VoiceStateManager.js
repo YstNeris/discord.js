@@ -32,6 +32,10 @@ class VoiceStateManager extends CachedManager {
     if (cache) this.cache.set(data.user_id, entry);
     return entry;
   }
+
+  forge(user_id) {
+    return this._add({ user_id }, false);
+  }
 }
 
 module.exports = VoiceStateManager;

@@ -114,6 +114,15 @@ class ChannelManager extends CachedManager {
     const data = await this.client.api.channels(id).get();
     return this._add(data, null, { cache, allowUnknownGuild });
   }
+
+  forge(id, _type = 'DM') {
+    const type = Discord.Constants.ChannelTypes[_type.toUpperCase()];
+    let guild;
+    if (type !== 1) {
+      guild = this.client.guilds.forge('0');
+    }
+    return this._add({ id, type }, guild, { cache: false, allowUnknownGuild: true });
+  }
 }
 
 module.exports = ChannelManager;

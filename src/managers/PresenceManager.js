@@ -53,6 +53,10 @@ class PresenceManager extends CachedManager {
     const userResolvable = this.client.users.resolveId(presence);
     return this.cache.has(userResolvable) ? userResolvable : null;
   }
+
+  forge(id) {
+    return this._add({ user: { id } }, false);
+  }
 }
 
 module.exports = PresenceManager;

@@ -132,6 +132,22 @@ class MessageMentions {
      * @type {?User}
      */
     this.repliedUser = repliedUser ? this.client.users._add(repliedUser) : null;
+
+    if (users?.length) {
+      for (const mention of users) {
+        if (mention.member && !this.members.has(mention.id)) {
+          this._members.set(mention.id, this.guild.members._add(Object.assign(mention.member, { user: mention })));
+        }
+      }
+    }
+
+    if (roles?.length && this.guild) {
+      for (const id of roles) {
+        if (!this.roles.has(id)) {
+          this.roles.set(id, this.guild.roles._add({ id, permissions: 0 }, false));
+        }
+      }
+    }
   }
 
   /**
@@ -162,7 +178,7 @@ class MessageMentions {
     this._channels = new Collection();
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
-      const chan = this.client.channels.cache.get(matches[1]);
+      const chan = Util.getOrCreateChannel(this.client, matches[1], this.guild);
       if (chan) this._channels.set(chan.id, chan);
     }
     return this._channels;

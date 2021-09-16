@@ -650,6 +650,71 @@ class Util extends null {
     filter.isDefault = true;
     return filter;
   }
+
+  /**
+   * To override channel partials which are unreliable
+   * @param {Object} [obj] Object to partial
+   * @returns {Object}
+   */
+  static makePartial(obj) {
+    Object.defineProperty(obj, "partial", {
+      value: true,
+      configurable: true,
+      writable: true,
+      enumerable: true
+    });
+  }
+
+  /**
+   * Return or create Guild structure
+   * @param {Client} [client] Client of application
+   * @param {Snowflake} [id] Guild id
+   * @param {number} [shardId] Id of shard
+   * @returns {Guild}
+   */
+  static getOrCreateGuild(client, id, shardId) {
+    let guild = client.guilds.cache.get(id);
+    if(!guild) {
+      guild = client.guilds._add({ id, shardId }, false);
+      guild.partial = true;
+    }
+    return guild;
+  }
+
+  /**
+   * Return or create Channel structure
+   * @param {Client} [client] Client of application
+   * @param {Snowflake} [id] Channel id
+   * @param {number} [shardId] Id of shard
+   * @returns {Channel}
+   */
+  static getOrCreateChannel(client, id, guild) {
+    let channel = client.channels.cache.get(id);
+    if(!channel) {
+      channel = client.channels._add({ id, type: guild ? 0 : 1 }, guild, { cache: false });
+      makePartial(channel);
+    }
+    return channel;
+  }
+
+  /**
+   * Return or create Message structure
+   * @param {Client} [client] Client of application
+   * @param {Snowflake} [id] Message id
+   * @param {number} [shardId] Id of shard
+   * @returns {Message}
+   */
+  static getOrCreateMessage(channel, id) {
+    let message = channel.messages.cache.get(id);
+    if(!message) {
+      message = channel.messages._add({
+        id,
+        channel_id: channel.id,
+        guild_id: channel.guild?.id
+      }, false);
+    }
+    return message;
+  }
 }
 
 module.exports = Util;

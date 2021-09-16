@@ -1,32 +1,30 @@
 'use strict';
 
 const Action = require('./Action');
+const { Events } = require('../../util/Constants');
+const Util = require('../../util/Util');
 
 class GuildStickersUpdateAction extends Action {
   handle(data) {
-    const guild = this.client.guilds.cache.get(data.guild_id);
-    if (!guild?.stickers) return;
-
+    const client = this.client;
+    const guild = Util.getOrCreateGuild(client, data.guild_id, data.shardId);
     const deletions = new Map(guild.stickers.cache);
-
     for (const sticker of data.stickers) {
-      // Determine type of sticker event
-      const cachedSticker = guild.stickers.cache.get(sticker.id);
-      if (cachedSticker) {
+      const cached = guild.stickers.cache.get(sticker.id);
+      if (cached) {
         deletions.delete(sticker.id);
-        if (!cachedSticker.equals(sticker)) {
-          // Sticker updated
-          this.client.actions.GuildStickerUpdate.handle(cachedSticker, sticker);
+        if (!cached.equals(sticker)) {
+          const result = client.actions.GuildStickerUpdate.handle(cached, sticker);
+          this.client.emit(Events.GUILD_STICKER_UPDATE, result.old, result.sticker);
         }
       } else {
-        // Sticker added
-        this.client.actions.GuildStickerCreate.handle(guild, sticker);
+        const result = client.actions.GuildStickerCreate.handle(guild, sticker);
+        this.client.emit(Events.GUILD_STICKER_CREATE, result.sticker);
       }
     }
-
-    for (const sticker of deletions.values()) {
-      // Sticker deleted
-      this.client.actions.GuildStickerDelete.handle(sticker);
+    for (const deleted of deletions.values()) {
+      const result = client.actions.GuildStickerDelete.handle(deleted);
+      this.client.emit(Events.GUILD_STICKER_DELETE, result.sticker);
     }
   }
 }

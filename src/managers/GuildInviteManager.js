@@ -195,6 +195,10 @@ class GuildInviteManager extends CachedManager {
 
     await this.client.api.invites(code).delete({ reason });
   }
+
+  forge(code, id) {
+    return this._add({ code, channel: { id } }, false);
+  }
 }
 
 module.exports = GuildInviteManager;
