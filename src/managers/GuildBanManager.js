@@ -4,7 +4,8 @@ const Collection = require('../util/Collection');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const GuildBan = require('../structures/GuildBan');
-const GuildMember = require('../structures/GuildMember');
+const Structures = require('../util/Structures');
+const GuildMember = Structures.get('GuildMember');
 
 /**
  * Manages API methods for GuildBans and stores their cache.

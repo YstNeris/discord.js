@@ -3,12 +3,13 @@
 const Collection = require('../util/Collection');
 const Integration = require('./Integration');
 const StageInstance = require('./StageInstance');
-const Sticker = require('./Sticker');
 const Webhook = require('./Webhook');
 const { OverwriteTypes, PartialTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
+const Structures = require('../util/Structures');
+const Sticker = Structures.get('Sticker');
 
 /**
  * The target type of an entry. Here are the available types:

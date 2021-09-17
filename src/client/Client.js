@@ -15,8 +15,6 @@ const ClientPresence = require('../structures/ClientPresence');
 const GuildPreview = require('../structures/GuildPreview');
 const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
-const Sticker = require('../structures/Sticker');
-const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
@@ -25,6 +23,9 @@ const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
 const Options = require('../util/Options');
 const Permissions = require('../util/Permissions');
+const Structures = require('../util/Structures');
+const Sticker = Structures.get('Sticker');
+const StickerPack = Structures.get('StickerPack');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -183,6 +184,12 @@ class Client extends BaseClient {
         this.sweepMessages.bind(this),
         this.options.messageSweepInterval * 1_000,
       ).unref();
+    }
+
+    if (this.options.structures && typeof this.options.structures === 'object') {
+      for (const [structure, extender] of Object.entries(this.options.structures)) {
+        Structures.extend(structure, extender);
+      }
     }
   }
 

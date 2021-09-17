@@ -10,7 +10,6 @@ const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
-const Sticker = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { InteractionTypes, MessageTypes, SystemMessageTypes } = require('../util/Constants');
@@ -18,6 +17,8 @@ const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
+const Structures = require('../util/Structures');
+const Sticker = Structures.get('Sticker');
 
 /**
  * Represents a message on Discord.

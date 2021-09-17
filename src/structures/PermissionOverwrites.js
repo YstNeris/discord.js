@@ -1,10 +1,11 @@
 'use strict';
 
 const Base = require('./Base');
-const Role = require('./Role');
 const { TypeError } = require('../errors');
 const { OverwriteTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const Structures = require('../util/Structures');
+const Role = Structures.get('Role');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.

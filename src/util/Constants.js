@@ -189,7 +189,7 @@ exports.Events = {
   GUILD_STICKER_CREATE: 'stickerCreate',
   GUILD_STICKER_DELETE: 'stickerDelete',
   GUILD_STICKER_UPDATE: 'stickerUpdate',
-  GUILD_STICKERS_UPDATE: 'guildStickersUpdate',
+  GUILD_STICKERS_UPDATE: 'stickersUpdate',
 };
 
 exports.ShardEvents = {

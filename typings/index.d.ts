@@ -3263,6 +3263,7 @@ export interface ClientEvents {
   emojiCreate: [emoji: GuildEmoji];
   emojiDelete: [emoji: GuildEmoji];
   emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
+  emojisUpdate: [emojis: Collection<Snowflake, GuildEmoji>];
   error: [error: Error];
   guildBanAdd: [ban: GuildBan];
   guildBanRemove: [ban: GuildBan];
@@ -3324,12 +3325,14 @@ export interface ClientEvents {
   shardReady: [shardId: number, unavailableGuilds: Set<Snowflake> | undefined];
   shardReconnecting: [shardId: number];
   shardResume: [shardId: number, replayedEvents: number];
+  shardConnect: [shardId: number, guilds: Guild[]];
   stageInstanceCreate: [stageInstance: StageInstance];
   stageInstanceUpdate: [oldStageInstance: StageInstance | null, newStageInstance: StageInstance];
   stageInstanceDelete: [stageInstance: StageInstance];
   stickerCreate: [sticker: Sticker];
   stickerDelete: [sticker: Sticker];
   stickerUpdate: [oldSticker: Sticker, newSticker: Sticker];
+  stickersUpdate: [stickers: Collection<Snowflake, Sticker>];
 }
 
 export interface ClientOptions {
@@ -3356,6 +3359,7 @@ export interface ClientOptions {
   ws?: WebSocketOptions;
   http?: HTTPOptions;
   rejectOnRateLimit?: string[] | ((data: RateLimitData) => boolean | Promise<boolean>);
+  structures?: { [K in keyof Extendable]?: Extendable[K] };
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -3660,6 +3664,34 @@ export interface EscapeMarkdownOptions {
 }
 
 export type ExplicitContentFilterLevel = keyof typeof ExplicitContentFilterLevels;
+
+interface Extendable {
+  ButtonInteraction: typeof ButtonInteraction;
+  CategoryChannel: typeof CategoryChannel;
+  CommandInteraction: typeof CommandInteraction;
+  ContextMenuInteraction: typeof ContextMenuInteraction;
+  DMChannel: typeof DMChannel;
+  Guild: typeof Guild;
+  GuildEmoji: typeof GuildEmoji;
+  GuildMember: typeof GuildMember;
+  Message: typeof Message;
+  MessageReaction: typeof MessageReaction;
+  NewsChannel: typeof NewsChannel;
+  Presence: typeof Presence;
+  Role: typeof Role;
+  SelectMenuInteraction: typeof SelectMenuInteraction;
+  StageChannel: typeof StageChannel;
+  Sticker: typeof Sticker;
+  StickerPack: typeof StickerPack;
+  StoreChannel: typeof StoreChannel;
+  TextChannel: typeof TextChannel;
+  ThreadChannel: typeof ThreadChannel;
+  ThreadMember: typeof ThreadMember;
+  User: typeof User;
+  VoiceChannel: typeof VoiceChannel;
+  VoiceState: typeof VoiceState;
+  WelcomeChannel: typeof WelcomeChannel;
+}
 
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {
   guildId?: Snowflake;

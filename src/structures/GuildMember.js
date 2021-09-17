@@ -1,11 +1,12 @@
 'use strict';
 
 const Base = require('./Base');
-const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Permissions = require('../util/Permissions');
+const Structures = require('../util/Structures');
+const VoiceState = Structures.get('VoiceState');
 
 /**
  * Represents a member of a guild on Discord.

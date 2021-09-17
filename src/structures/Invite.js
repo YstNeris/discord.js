@@ -6,6 +6,7 @@ const InviteStageInstance = require('./InviteStageInstance');
 const { Error } = require('../errors');
 const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const Structures = require('../util/Structures');
 
 /**
  * Represents an invitation to a guild channel.
@@ -20,7 +21,7 @@ class Invite extends Base {
 
   _patch(data) {
     const InviteGuild = require('./InviteGuild');
-    const Guild = require('./Guild');
+    const Guild = Structures.get('Guild');
     /**
      * The guild the invite is for including welcome screen data if present
      * @type {?(Guild|InviteGuild)}

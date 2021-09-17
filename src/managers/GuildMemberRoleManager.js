@@ -3,7 +3,8 @@
 const Collection = require('../util/Collection');
 const DataManager = require('./DataManager');
 const { TypeError } = require('../errors');
-const Role = require('../structures/Role');
+const Structures = require('../util/Structures');
+const Role = Structures.get('Role');
 
 /**
  * Manages API methods for roles of a GuildMember and stores their cache.

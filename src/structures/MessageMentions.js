@@ -3,6 +3,7 @@
 const Collection = require('../util/Collection');
 const { ChannelTypes } = require('../util/Constants');
 const Util = require('../util/Util');
+const Structures = require('../util/Structures');
 
 /**
  * Keeps track of mentions in a {@link Message}.
@@ -201,7 +202,7 @@ class MessageMentions {
    */
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
     if (!ignoreEveryone && this.everyone) return true;
-    const GuildMember = require('./GuildMember');
+    const GuildMember = Structures.get('GuildMember');
     if (!ignoreRoles && data instanceof GuildMember) {
       for (const role of this.roles.values()) if (data.roles.cache.has(role.id)) return true;
     }

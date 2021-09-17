@@ -6,8 +6,9 @@ const ThreadManager = require('./ThreadManager');
 const { Error } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
-const ThreadChannel = require('../structures/ThreadChannel');
 const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
+const Structures = require('../util/Structures');
+const ThreadChannel = Structures.get('ThreadChannel');
 
 let cacheWarningEmitted = false;
 

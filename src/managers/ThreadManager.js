@@ -3,8 +3,9 @@
 const Collection = require('../util/Collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
-const ThreadChannel = require('../structures/ThreadChannel');
 const { ChannelTypes } = require('../util/Constants');
+const Structures = require('../util/Structures');
+const ThreadChannel = Structures.get('ThreadChannel');
 
 /**
  * Manages API methods for {@link ThreadChannel} objects and stores their cache.

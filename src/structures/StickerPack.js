@@ -2,8 +2,9 @@
 
 const Collection = require('../util/Collection');
 const Base = require('./Base');
-const Sticker = require('./Sticker');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
+const Structures = require('../util/Structures');
+const Sticker = Structures.get('Sticker');
 
 /**
  * Represents a pack of standard stickers.

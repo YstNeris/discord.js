@@ -1,4 +1,3 @@
-import { APIInteractionGuildMember } from 'discord-api-types';
 import {
   ApplicationCommand,
   ApplicationCommandChoicesData,
@@ -70,6 +69,7 @@ import {
 } from '.';
 import { ApplicationCommandOptionTypes, ApplicationCommandTypes } from './enums';
 
+import { APIInteractionGuildMember } from 'discord-api-types';
 const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,
   makeCache: Options.cacheWithLimits({

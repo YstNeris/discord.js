@@ -1,7 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const DMChannel = require('../../structures/DMChannel');
+const Structures = require('../../util/Structures');
+const DMChannel = Structures.get('DMChannel');
 const Util = require('../../util/Util');
 
 class ChannelDeleteAction extends Action {

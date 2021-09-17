@@ -1,9 +1,10 @@
 'use strict';
 
-const GuildEmoji = require('./GuildEmoji');
 const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserManager = require('../managers/ReactionUserManager');
 const Util = require('../util/Util');
+const Structures = require('../util/Structures');
+const GuildEmoji = Structures.get('GuildEmoji');
 
 /**
  * Represents a reaction to a message.

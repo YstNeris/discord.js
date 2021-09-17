@@ -4,8 +4,9 @@ const Collection = require('../util/Collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
-const Role = require('../structures/Role');
 const { OverwriteTypes } = require('../util/Constants');
+const Structures = require('../util/Structures');
+const Role = Structures.get('Role');
 
 let cacheWarningEmitted = false;
 

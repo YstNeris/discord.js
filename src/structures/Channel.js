@@ -11,6 +11,7 @@ let ThreadChannel;
 let VoiceChannel;
 const { ChannelTypes, ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
+const Structures = require('../util/Structures');
 
 /**
  * Represents any channel on Discord.
@@ -137,14 +138,14 @@ class Channel extends Base {
       return data;
     }
 
-    CategoryChannel ??= require('./CategoryChannel');
-    DMChannel ??= require('./DMChannel');
-    NewsChannel ??= require('./NewsChannel');
-    StageChannel ??= require('./StageChannel');
-    StoreChannel ??= require('./StoreChannel');
-    TextChannel ??= require('./TextChannel');
-    ThreadChannel ??= require('./ThreadChannel');
-    VoiceChannel ??= require('./VoiceChannel');
+    CategoryChannel ??= Structures.get('CategoryChannel');
+    DMChannel ??= Structures.get('DMChannel');
+    NewsChannel ??= Structures.get('NewsChannel');
+    StageChannel ??= Structures.get('StageChannel');
+    StoreChannel ??= Structures.get('StoreChannel');
+    TextChannel ??= Structures.get('TextChannel');
+    ThreadChannel ??= Structures.get('ThreadChannel');
+    VoiceChannel ??= Structures.get('VoiceChannel');
 
     let channel;
     if (!data.guild_id && !guild) {
