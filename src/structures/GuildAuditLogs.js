@@ -9,7 +9,6 @@ const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 const Structures = require('../util/Structures');
-const Sticker = Structures.get('Sticker');
 
 /**
  * The target type of an entry. Here are the available types:
@@ -564,6 +563,7 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (targetType === Targets.STICKER) {
+      const Sticker = Structures.get('Sticker');
       this.target =
         guild.stickers.cache.get(data.target_id) ??
         new Sticker(

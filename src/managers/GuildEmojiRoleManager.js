@@ -3,8 +3,7 @@
 const Collection = require('../util/Collection');
 const DataManager = require('./DataManager');
 const { TypeError } = require('../errors');
-const Structures = require('../util/Structures');
-const Role = Structures.get('Role');
+const GuildEmoji = require('../structures/Role');
 
 /**
  * Manages API methods for roles belonging to emojis and stores their cache.

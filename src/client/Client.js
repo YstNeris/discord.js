@@ -38,6 +38,12 @@ class Client extends BaseClient {
   constructor(options) {
     super(options);
 
+    if (this.options.structures && typeof this.options.structures === 'object') {
+      for (const [structure, extender] of Object.entries(this.options.structures)) {
+        Structures.extend(structure, extender);
+      }
+    }
+
     const data = require('worker_threads').workerData ?? process.env;
     const defaults = Options.createDefault();
 
@@ -184,12 +190,6 @@ class Client extends BaseClient {
         this.sweepMessages.bind(this),
         this.options.messageSweepInterval * 1_000,
       ).unref();
-    }
-
-    if (this.options.structures && typeof this.options.structures === 'object') {
-      for (const [structure, extender] of Object.entries(this.options.structures)) {
-        Structures.extend(structure, extender);
-      }
     }
   }
 

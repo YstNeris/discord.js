@@ -19,7 +19,7 @@ class DataManager extends BaseManager {
      * @private
      * @readonly
      */
-    Object.defineProperty(this, 'holds', { value: holds });
+    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) ?? holds });
   }
 
   /**

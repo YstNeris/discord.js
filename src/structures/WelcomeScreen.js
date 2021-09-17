@@ -3,7 +3,6 @@
 const Collection = require('../util/Collection');
 const Base = require('./Base');
 const Structures = require('../util/Structures');
-const WelcomeChannel = Structures.get('WelcomeChannel');
 
 /**
  * Represents a welcome screen.
@@ -31,6 +30,7 @@ class WelcomeScreen extends Base {
      */
     this.welcomeChannels = new Collection();
 
+    const WelcomeChannel = Structures.get('WelcomeChannel');
     for (const channel of data.welcome_channels) {
       const welcomeChannel = new WelcomeChannel(this.guild, channel);
       this.welcomeChannels.set(welcomeChannel.channelId, welcomeChannel);

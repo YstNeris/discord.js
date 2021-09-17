@@ -4,7 +4,6 @@ const Collection = require('../util/Collection');
 const Base = require('./Base');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Structures = require('../util/Structures');
-const Sticker = Structures.get('Sticker');
 
 /**
  * Represents a pack of standard stickers.
@@ -23,6 +22,7 @@ class StickerPack extends Base {
      */
     this.id = pack.id;
 
+    const Sticker = Structures.get('Sticker');
     /**
      * The stickers in the pack
      * @type {Collection<Snowflake, Sticker>}

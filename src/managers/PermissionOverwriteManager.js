@@ -5,8 +5,7 @@ const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const { OverwriteTypes } = require('../util/Constants');
-const Structures = require('../util/Structures');
-const Role = Structures.get('Role');
+const Role = require('../structures/Role');
 
 let cacheWarningEmitted = false;
 

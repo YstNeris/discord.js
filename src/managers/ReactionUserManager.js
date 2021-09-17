@@ -3,8 +3,7 @@
 const Collection = require('../util/Collection');
 const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
-const Structures = require('../util/Structures');
-const User = Structures.get('User');
+const User = require('../structures/User');
 
 /**
  * Manages API methods for users who reacted to a reaction and stores their cache.

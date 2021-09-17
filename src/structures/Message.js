@@ -18,7 +18,6 @@ const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 const Structures = require('../util/Structures');
-const Sticker = Structures.get('Sticker');
 
 /**
  * Represents a message on Discord.
@@ -163,6 +162,7 @@ class Message extends Base {
     }
 
     if ('sticker_items' in data || 'stickers' in data || !partial) {
+      const Sticker = Structures.get('Sticker');
       /**
        * A collection of stickers in the message
        * @type {Collection<Snowflake, Sticker>}

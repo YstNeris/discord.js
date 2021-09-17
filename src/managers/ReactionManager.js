@@ -1,8 +1,7 @@
 'use strict';
 
 const CachedManager = require('./CachedManager');
-const Structures = require('../util/Structures');
-const MessageReaction = Structures.get('MessageReaction');
+const MessageReaction = require('../structures/MessageReaction');
 
 /**
  * Manages API methods for reactions and holds their cache.

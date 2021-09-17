@@ -6,7 +6,6 @@ const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Permissions = require('../util/Permissions');
 const Structures = require('../util/Structures');
-const VoiceState = Structures.get('VoiceState');
 
 /**
  * Represents a member of a guild on Discord.
@@ -110,7 +109,9 @@ class GuildMember extends Base {
    * @readonly
    */
   get voice() {
-    return this.guild.voiceStates.cache.get(this.id) ?? new VoiceState(this.guild, { user_id: this.id });
+    return (
+      this.guild.voiceStates.cache.get(this.id) ?? new Structures.get('VoiceState')(this.guild, { user_id: this.id })
+    );
   }
 
   /**
