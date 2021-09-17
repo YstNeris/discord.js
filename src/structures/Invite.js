@@ -8,6 +8,8 @@ const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Structures = require('../util/Structures');
 
+let Structures;
+
 /**
  * Represents an invitation to a guild channel.
  * <warn>The only guaranteed properties are `code`, `channel`, and `url`. Other properties can be missing.</warn>
@@ -20,6 +22,7 @@ class Invite extends Base {
   }
 
   _patch(data) {
+    if (!Structures) Structures = require('../util/Structures');
     const InviteGuild = require('./InviteGuild');
     const Guild = Structures.get('Guild');
     /**

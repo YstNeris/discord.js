@@ -8,8 +8,6 @@ const Collection = require('../../util/Collection');
 const { InteractionTypes } = require('../../util/Constants');
 const { TypeError, Error } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
-const GuildMember = require('../../structures/GuildMember');
-const User = require('../../structures/User');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -154,6 +152,9 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   async send(options) {
+    const GuildMember = require('../GuildMember');
+    const User = require('../User');
+
     if (this instanceof User || this instanceof GuildMember) {
       const dm = await this.createDM();
       return dm.send(options);

@@ -33,7 +33,16 @@ class GuildMemberRoleManager extends DataManager {
    */
   get cache() {
     const everyone = this.guild.roles.everyone;
-    return this.guild.roles.cache.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
+    const roles = new Collection([[everyone.id, everyone]]);
+    for (const id of this.member._roles) {
+      let role = this.guild.roles.cache.get(id);
+      if (!role) {
+        role = this.guild.roles._add({ id, permissions: 0 }, false);
+        role.partial = true;
+      }
+      roles.set(id, role);
+    }
+    return roles;
   }
 
   /**

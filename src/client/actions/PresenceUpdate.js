@@ -3,6 +3,7 @@
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
 const Util = require('../../util/Util');
+const LimitedCollection = require('../../util/LimitedCollection');
 
 class PresenceUpdateAction extends Action {
   handle(data) {
