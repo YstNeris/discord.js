@@ -3398,7 +3398,7 @@ export interface ClientOptions {
   http?: HTTPOptions;
   rejectOnRateLimit?: string[] | ((data: RateLimitData) => boolean | Promise<boolean>);
   disabledEvents?: string[];
-  structures?: { [K in keyof Extendable]?: Extendable[K] };
+  structures?: { [K in keyof Extendable]?: (baseClass: Extendable[K]) => Extendable[K] };
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
