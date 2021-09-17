@@ -2426,6 +2426,7 @@ export class ApplicationCommandManager<
     commands: ApplicationCommandData[],
     guildId: Snowflake,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
+  public forge(application_id: Snowflake): ApplicationCommand;
   private static transformCommand(
     command: ApplicationCommandData,
   ): Omit<APIApplicationCommand, 'id' | 'application_id' | 'guild_id'>;
@@ -2486,6 +2487,17 @@ export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, 
 export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
   public constructor(client: Client, iterable: Iterable<RawChannelData>);
   public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
+  public forge(id: Snowflake, type?: 'DM'): DMChannel;
+  public forge(id: Snowflake, type: 'GUILD_TEXT'): TextChannel;
+  public forge(id: Snowflake, type: 'GUILD_VOICE'): VoiceChannel;
+  public forge(id: Snowflake, type: 'GUILD_CATEGORY'): CategoryChannel;
+  public forge(id: Snowflake, type: 'GUILD_NEWS'): NewsChannel;
+  public forge(id: Snowflake, type: 'GUILD_STORE'): StoreChannel;
+  public forge(id: Snowflake, type: 'GUILD_STAGE_VOICE'): StageChannel;
+  public forge(
+    id: Snowflake,
+    type: 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD' | 'GUILD_NEWS_THREAD',
+  ): ThreadChannel;
 }
 
 export class GuildApplicationCommandManager extends ApplicationCommandManager<ApplicationCommand, {}, Guild> {
@@ -2534,6 +2546,16 @@ export class GuildChannelManager extends CachedManager<
     Collection<Snowflake, TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>
   >;
   public fetchActiveThreads(cache?: boolean): Promise<FetchedThreads>;
+  public forge(id: Snowflake, type: 'GUILD_TEXT'): TextChannel;
+  public forge(id: Snowflake, type: 'GUILD_VOICE'): VoiceChannel;
+  public forge(id: Snowflake, type: 'GUILD_CATEGORY'): CategoryChannel;
+  public forge(id: Snowflake, type: 'GUILD_NEWS'): NewsChannel;
+  public forge(id: Snowflake, type: 'GUILD_STORE'): StoreChannel;
+  public forge(id: Snowflake, type: 'GUILD_STAGE_VOICE'): StageChannel;
+  public forge(
+    id: Snowflake,
+    type: 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD' | 'GUILD_NEWS_THREAD',
+  ): ThreadChannel;
 }
 
 export class GuildEmojiManager extends BaseGuildEmojiManager {
@@ -2546,6 +2568,7 @@ export class GuildEmojiManager extends BaseGuildEmojiManager {
   ): Promise<GuildEmoji>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildEmoji>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildEmoji>>;
+  public forge(emoji_id: Snowflake): GuildEmojiManager;
 }
 
 export class GuildEmojiRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
@@ -2566,6 +2589,7 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
   public create(name: string, options?: GuildCreateOptions): Promise<Guild>;
   public fetch(options: Snowflake | FetchGuildOptions): Promise<Guild>;
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
+  public forge(guild_id: Snowflake): Guild;
 }
 
 export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, GuildMemberResolvable> {
@@ -2588,6 +2612,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public unban(user: UserResolvable, reason?: string): Promise<User>;
+  public forge(user_id: Snowflake): GuildMember;
 }
 
 export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBanResolvable> {
@@ -2597,6 +2622,7 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
   public fetch(options: UserResolvable | FetchBanOptions): Promise<GuildBan>;
   public fetch(options?: FetchBansOptions): Promise<Collection<Snowflake, GuildBan>>;
   public remove(user: UserResolvable, reason?: string): Promise<User>;
+  public forge(user_id: Snowflake): GuildBan;
 }
 
 export class GuildInviteManager extends DataManager<string, Invite, InviteResolvable> {
@@ -2606,6 +2632,7 @@ export class GuildInviteManager extends DataManager<string, Invite, InviteResolv
   public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
+  public forge(code: string, channel_id: Snowflake): Invite;
 }
 
 export class GuildStickerManager extends CachedManager<Snowflake, Sticker, StickerResolvable> {
@@ -2621,6 +2648,7 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
   public delete(sticker: StickerResolvable, reason?: string): Promise<void>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Sticker>;
   public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Sticker>>;
+  public forge(sticker_id: Snowflake): Sticker;
 }
 
 export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
@@ -2660,6 +2688,7 @@ export class MessageManager extends CachedManager<Snowflake, Message, MessageRes
   public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
   public pin(message: MessageResolvable): Promise<void>;
   public unpin(message: MessageResolvable): Promise<void>;
+  public forge(message_id: Snowflake): Message;
 }
 
 export class PermissionOverwriteManager extends CachedManager<
@@ -2689,16 +2718,20 @@ export class PermissionOverwriteManager extends CachedManager<
     overwriteOptions?: GuildChannelOverwriteOptions,
   ): Promise<GuildChannel>;
   public delete(userOrRole: RoleResolvable | UserResolvable, reason?: string): Promise<GuildChannel>;
+  public forge(user_id: Snowflake, type: OverwriteType): PermissionOverwrites;
 }
 
 export class PresenceManager extends CachedManager<Snowflake, Presence, PresenceResolvable> {
   public constructor(client: Client, iterable?: Iterable<RawPresenceData>);
+  public forge(user_id: Snowflake): Presence;
 }
 
 export class ReactionManager extends CachedManager<Snowflake | string, MessageReaction, MessageReactionResolvable> {
   public constructor(message: Message, iterable?: Iterable<RawMessageReactionData>);
   public message: Message;
   public removeAll(): Promise<Message>;
+  public forge(emoji_id: Snowflake): MessageReaction;
+  public forge(unicode_emoji: string): MessageReaction;
 }
 
 export class ReactionUserManager extends CachedManager<Snowflake, User, UserResolvable> {
@@ -2719,6 +2752,7 @@ export class RoleManager extends CachedManager<Snowflake, Role, RoleResolvable> 
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, Role>>;
   public create(options?: CreateRoleOptions): Promise<Role>;
   public edit(role: RoleResolvable, options: RoleData, reason?: string): Promise<Role>;
+  public forge(role_id: Snowflake): Role;
 }
 
 export class StageInstanceManager extends CachedManager<Snowflake, StageInstance, StageInstanceResolvable> {
@@ -2728,6 +2762,7 @@ export class StageInstanceManager extends CachedManager<Snowflake, StageInstance
   public fetch(channel: StageChannelResolvable, options?: BaseFetchOptions): Promise<StageInstance>;
   public edit(channel: StageChannelResolvable, options: StageInstanceEditOptions): Promise<StageInstance>;
   public delete(channel: StageChannelResolvable): Promise<void>;
+  public forge(stage_id: Snowflake): StageInstance;
 }
 
 export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
@@ -2746,15 +2781,18 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
   public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
+  public forge(user_id: Snowflake): ThreadMember;
 }
 
 export class UserManager extends CachedManager<Snowflake, User, UserResolvable> {
   public constructor(client: Client, iterable?: Iterable<RawUserData>);
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<User>;
+  public forge(user_id: Snowflake): User;
 }
 
 export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, typeof VoiceState> {
   public constructor(guild: Guild, iterable?: Iterable<RawVoiceStateData>);
+  public forge(user_id: Snowflake): VoiceState;
   public guild: Guild;
 }
 
@@ -3167,19 +3205,19 @@ export type BufferResolvable = Buffer | string;
 export interface Caches {
   ApplicationCommandManager: [manager: typeof ApplicationCommandManager, holds: typeof ApplicationCommand];
   BaseGuildEmojiManager: [manager: typeof BaseGuildEmojiManager, holds: typeof GuildEmoji];
-  // TODO: ChannelManager: [manager: typeof ChannelManager, holds: typeof Channel];
-  // TODO: GuildChannelManager: [manager: typeof GuildChannelManager, holds: typeof GuildChannel];
-  // TODO: GuildManager: [manager: typeof GuildManager, holds: typeof Guild];
+  ChannelManager: [manager: typeof ChannelManager, holds: typeof Channel];
+  GuildChannelManager: [manager: typeof GuildChannelManager, holds: typeof GuildChannel];
+  GuildManager: [manager: typeof GuildManager, holds: typeof Guild];
   GuildMemberManager: [manager: typeof GuildMemberManager, holds: typeof GuildMember];
   GuildBanManager: [manager: typeof GuildBanManager, holds: typeof GuildBan];
   GuildInviteManager: [manager: typeof GuildInviteManager, holds: typeof Invite];
   GuildStickerManager: [manager: typeof GuildStickerManager, holds: typeof Sticker];
   MessageManager: [manager: typeof MessageManager, holds: typeof Message];
-  // TODO: PermissionOverwriteManager: [manager: typeof PermissionOverwriteManager, holds: typeof PermissionOverwrites];
+  PermissionOverwriteManager: [manager: typeof PermissionOverwriteManager, holds: typeof PermissionOverwrites];
   PresenceManager: [manager: typeof PresenceManager, holds: typeof Presence];
   ReactionManager: [manager: typeof ReactionManager, holds: typeof MessageReaction];
   ReactionUserManager: [manager: typeof ReactionUserManager, holds: typeof User];
-  // TODO: RoleManager: [manager: typeof RoleManager, holds: typeof Role];
+  RoleManager: [manager: typeof RoleManager, holds: typeof Role];
   StageInstanceManager: [manager: typeof StageInstanceManager, holds: typeof StageInstance];
   ThreadManager: [manager: typeof ThreadManager, holds: typeof ThreadChannel];
   ThreadMemberManager: [manager: typeof ThreadMemberManager, holds: typeof ThreadMember];
@@ -3359,6 +3397,7 @@ export interface ClientOptions {
   ws?: WebSocketOptions;
   http?: HTTPOptions;
   rejectOnRateLimit?: string[] | ((data: RateLimitData) => boolean | Promise<boolean>);
+  disabledEvents?: string[];
   structures?: { [K in keyof Extendable]?: Extendable[K] };
 }
 
@@ -4159,6 +4198,7 @@ export type InviteScope =
 export interface LifetimeFilterOptions<K, V> {
   excludeFromSweep?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
   getComparisonTimestamp?: (value: V, key: K, collection: LimitedCollection<K, V>) => number;
+  forceSet(key: any, value: any): this;
   lifetime?: number;
 }
 
