@@ -6,7 +6,6 @@ const InviteStageInstance = require('./InviteStageInstance');
 const { Error } = require('../errors');
 const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const Structures = require('../util/Structures');
 
 let Structures;
 
