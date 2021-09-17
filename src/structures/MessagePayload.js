@@ -6,7 +6,8 @@ const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlags = require('../util/MessageFlags');
 const Util = require('../util/Util');
-const Structures = require('../util/Structures');
+const GuildMember = require('../structures/GuildMember');
+const User = require('../structures/User');
 
 /**
  * Represents a message to be sent to the API.
@@ -66,8 +67,6 @@ class MessagePayload {
    * @readonly
    */
   get isUser() {
-    const User = Structures.get('User');
-    const GuildMember = Structures.get('GuildMember');
     return this.target instanceof User || this.target instanceof GuildMember;
   }
 

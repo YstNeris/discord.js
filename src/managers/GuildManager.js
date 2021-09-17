@@ -16,11 +16,10 @@ const DataResolver = require('../util/DataResolver');
 const Permissions = require('../util/Permissions');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
 const { resolveColor } = require('../util/Util');
-const Structures = require('../util/Structures');
-const Guild = Structures.get('Guild');
-const GuildEmoji = Structures.get('GuildEmoji');
-const GuildMember = Structures.get('GuildMember');
-const Role = Structures.get('Role');
+const Guild = require('../structures/Guild');
+const GuildEmoji = require('../structures/GuildEmoji');
+const GuildMember = require('../structures/GuildMember');
+const Role = require('../structures/Role');
 
 let cacheWarningEmitted = false;
 

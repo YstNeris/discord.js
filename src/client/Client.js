@@ -24,8 +24,6 @@ const Intents = require('../util/Intents');
 const Options = require('../util/Options');
 const Permissions = require('../util/Permissions');
 const Structures = require('../util/Structures');
-const Sticker = Structures.get('Sticker');
-const StickerPack = Structures.get('StickerPack');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -352,6 +350,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchSticker(id) {
+    const Sticker = Structures.get('Sticker');
     const data = await this.api.stickers(id).get();
     return new Sticker(this, data);
   }
@@ -365,6 +364,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchPremiumStickerPacks() {
+    const StickerPack = Structures.get('StickerPack');
     const data = await this.api('sticker-packs').get();
     return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
   }
