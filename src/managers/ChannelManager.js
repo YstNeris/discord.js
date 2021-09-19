@@ -2,7 +2,7 @@
 
 const CachedManager = require('./CachedManager');
 const Channel = require('../structures/Channel');
-const { Events, ThreadChannelTypes } = require('../util/Constants');
+const { Events, ThreadChannelTypes, ChannelTypes } = require('../util/Constants');
 
 let cacheWarningEmitted = false;
 
@@ -116,7 +116,7 @@ class ChannelManager extends CachedManager {
   }
 
   forge(id, _type = 'DM') {
-    const type = Discord.Constants.ChannelTypes[_type.toUpperCase()];
+    const type = ChannelTypes[_type.toUpperCase()];
     let guild;
     if (type !== 1) {
       guild = this.client.guilds.forge('0');
