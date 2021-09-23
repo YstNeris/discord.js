@@ -3,6 +3,8 @@
 const { Collection: DDOCollection } = require('@discordoo/collection');
 
 class Collection extends DDOCollection {
+  static default = Collection;
+
   forceSet(key, value) {
     return this.set(key, value);
   }
@@ -76,7 +78,7 @@ class Collection extends DDOCollection {
    * @example collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
    */
   sorted(compareFunction = Collection.defaultSort) {
-    return new this.constructor[Symbol.species](this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
+    return new this.constructor(this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
   }
 
   /**
