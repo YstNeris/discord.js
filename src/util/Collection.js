@@ -68,6 +68,30 @@ class Collection extends DDOCollection {
   }
 
   /**
+   * The sort method sorts the items of a collection in place and returns it.
+   * The sort is not necessarily stable in Node 10 or older.
+   * The default sort order is according to string Unicode code points.
+   * @param {Function} [compareFunction] Specifies a function that defines the sort order.
+   * If omitted, the collection is sorted according to each character's Unicode code point value,
+   * according to the string conversion of each element.
+   * @returns {Collection}
+   * @example collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
+   */
+  sort(compareFunction = Collection.defaultSort) {
+    const entries = [...this.entries()];
+    entries.sort((a, b) => compareFunction(a[1], b[1], a[0], b[0]));
+
+    // Perform clean-up
+    super.clear();
+
+    // Set the new entries
+    for (const [k, v] of entries) {
+      super.set(k, v);
+    }
+    return this;
+  }
+
+  /**
    * The sorted method sorts the items of a collection and returns it.
    * The sort is not necessarily stable in Node 10 or older.
    * The default sort order is according to string Unicode code points.
@@ -78,7 +102,7 @@ class Collection extends DDOCollection {
    * @example collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
    */
   sorted(compareFunction = Collection.defaultSort) {
-    return new this.constructor(this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
+    return new this.constructor[Symbol.species](this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
   }
 
   /**
