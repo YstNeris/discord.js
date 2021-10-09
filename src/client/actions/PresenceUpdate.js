@@ -10,7 +10,7 @@ class PresenceUpdateAction extends Action {
     const client = this.client;
     if (data.user.username) {
       const user = client.users.cache.get(data.user.id) || client.users._add(data.user);
-      if (!user.equals(data.user)) {
+      if (!user._equals(data.user)) {
         const { old, updated } = client.actions.UserUpdate.handle(data.user);
         client.emit(Events.USER_UPDATE, old, updated);
       }

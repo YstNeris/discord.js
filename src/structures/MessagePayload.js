@@ -82,7 +82,7 @@ class MessagePayload {
   }
 
   /**
-   * Wether or not the target is a {@link MessageManager}
+   * Whether or not the target is a {@link MessageManager}
    * @type {boolean}
    * @readonly
    */

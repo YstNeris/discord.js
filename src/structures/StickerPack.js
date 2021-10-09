@@ -10,10 +10,6 @@ const Structures = require('../util/Structures');
  * @extends {Base}
  */
 class StickerPack extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIStickerPack} pack The data for the sticker pack
-   */
   constructor(client, pack) {
     super(client);
     /**
@@ -98,8 +94,3 @@ class StickerPack extends Base {
 }
 
 module.exports = StickerPack;
-
-/**
- * @external APIStickerPack
- * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-pack-object}
- */

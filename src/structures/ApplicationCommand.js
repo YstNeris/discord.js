@@ -2,7 +2,7 @@
 
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
-const { ApplicationCommandOptionTypes, ApplicationCommandTypes } = require('../util/Constants');
+const { ApplicationCommandOptionTypes, ApplicationCommandTypes, ChannelTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -54,35 +54,47 @@ class ApplicationCommand extends Base {
   }
 
   _patch(data) {
-    /**
-     * The name of this command
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of this command
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
-    /**
-     * The description of this command
-     * @type {string}
-     */
-    this.description = data.description;
+    if ('description' in data) {
+      /**
+       * The description of this command
+       * @type {string}
+       */
+      this.description = data.description;
+    }
 
-    /**
-     * The options of this command
-     * @type {ApplicationCommandOption[]}
-     */
-    this.options = data.options?.map(o => this.constructor.transformOption(o, true)) ?? [];
+    if ('options' in data) {
+      /**
+       * The options of this command
+       * @type {ApplicationCommandOption[]}
+       */
+      this.options = data.options.map(o => this.constructor.transformOption(o, true));
+    } else {
+      this.options ??= [];
+    }
 
-    /**
-     * Whether the command is enabled by default when the app is added to a guild
-     * @type {boolean}
-     */
-    this.defaultPermission = data.default_permission;
+    if ('default_permission' in data) {
+      /**
+       * Whether the command is enabled by default when the app is added to a guild
+       * @type {boolean}
+       */
+      this.defaultPermission = data.default_permission;
+    }
 
-    /**
-     * Autoincrementing version identifier updated during substantial record changes
-     * @type {Snowflake}
-     */
-    this.version = data.version;
+    if ('version' in data) {
+      /**
+       * Autoincrementing version identifier updated during substantial record changes
+       * @type {Snowflake}
+       */
+      this.version = data.version;
+    }
   }
 
   /**
@@ -131,6 +143,12 @@ class ApplicationCommand extends Base {
    * @property {boolean} [required] Whether the option is required
    * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
+   * @property {ChannelType[]|number[]} [channelTypes] When the option type is channel,
+   * the allowed types of channels that can be selected
+   * @property {number[]} [channel_types] When the option type is channel,
+   * the API data for allowed types of channels that can be selected
+   * <warn>This is provided for compatibility with something like `@discordjs/builders`
+   * and will be discarded when `channelTypes` is present</warn>
    */
 
   /**
@@ -239,7 +257,8 @@ class ApplicationCommand extends Base {
       (option.required ?? (['SUB_COMMAND', 'SUB_COMMAND_GROUP'].includes(optionType) ? undefined : false)) !==
         existing.required ||
       option.choices?.length !== existing.choices?.length ||
-      option.options?.length !== existing.options?.length
+      option.options?.length !== existing.options?.length ||
+      (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length
     ) {
       return false;
     }
@@ -262,6 +281,15 @@ class ApplicationCommand extends Base {
       }
     }
 
+    if (existing.channelTypes) {
+      const newTypes = (option.channelTypes ?? option.channel_types).map(type =>
+        typeof type === 'number' ? ChannelTypes[type] : type,
+      );
+      for (const type of existing.channelTypes) {
+        if (!newTypes.includes(type)) return false;
+      }
+    }
+
     if (existing.options) {
       return this.optionsEqual(existing.options, option.options, enforceOptionOrder);
     }
@@ -277,6 +305,8 @@ class ApplicationCommand extends Base {
    * @property {boolean} [required] Whether the option is required
    * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
+   * @property {ChannelType[]} [channelTypes] When the option type is channel,
+   * the allowed types of channels that can be selected
    */
 
   /**
@@ -295,6 +325,7 @@ class ApplicationCommand extends Base {
    */
   static transformOption(option, received) {
     const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
+    const channelTypesKey = received ? 'channelTypes' : 'channel_types';
     return {
       type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       name: option.name,
@@ -303,6 +334,11 @@ class ApplicationCommand extends Base {
         option.required ?? (stringType === 'SUB_COMMAND' || stringType === 'SUB_COMMAND_GROUP' ? undefined : false),
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o, received)),
+      [channelTypesKey]: received
+        ? option.channel_types?.map(type => ChannelTypes[type])
+        : option.channelTypes?.map(type => (typeof type === 'string' ? ChannelTypes[type] : type)) ??
+          // When transforming to API data, accept API data
+          option.channel_types,
     };
   }
 }

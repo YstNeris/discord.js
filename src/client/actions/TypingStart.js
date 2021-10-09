@@ -10,6 +10,7 @@ class TypingStart extends Action {
     const client = this.client;
     const guild = data.guild_id ? Util.getOrCreateGuild(client, data.guild_id, data.shardId) : void 0;
     const channel = Util.getOrCreateChannel(client, data.channel_id, guild);
+    if (!channel) return;
     if (!TextBasedChannelTypes.includes(channel.type)) {
       this.client.emit(Events.WARN, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
       return;

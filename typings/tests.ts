@@ -1,5 +1,6 @@
 import {
   ApplicationCommand,
+  ApplicationCommandChannelOptionData,
   ApplicationCommandChoicesData,
   ApplicationCommandData,
   ApplicationCommandManager,
@@ -9,8 +10,6 @@ import {
   ApplicationCommandSubCommandData,
   ApplicationCommandSubGroupData,
   ButtonInteraction,
-  CacheFactory,
-  Caches,
   CategoryChannel,
   Client,
   ClientApplication,
@@ -22,6 +21,7 @@ import {
   CommandOptionChoiceResolvableType,
   CommandOptionNonChoiceResolvableType,
   Constants,
+  ContextMenuInteraction,
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
@@ -41,11 +41,9 @@ import {
   MessageCollector,
   MessageComponentInteraction,
   MessageEmbed,
-  MessageManager,
   MessageReaction,
   NewsChannel,
   Options,
-  PartialDMChannel,
   PartialTextBasedChannelFields,
   PartialUser,
   Permissions,
@@ -67,9 +65,8 @@ import {
   User,
   VoiceChannel,
 } from '.';
-import { ApplicationCommandOptionTypes, ApplicationCommandTypes } from './enums';
+import { ApplicationCommandOptionTypes } from './enums';
 
-import { APIInteractionGuildMember } from 'discord-api-types';
 const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,
   makeCache: Options.cacheWithLimits({
@@ -496,21 +493,26 @@ client.on('messageCreate', message => {
   // Verify that buttons interactions are inferred.
   const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
   assertType<Promise<ButtonInteraction>>(message.awaitMessageComponent({ componentType: 'BUTTON' }));
+  assertType<Promise<ButtonInteraction>>(channel.awaitMessageComponent({ componentType: 'BUTTON' }));
   assertType<InteractionCollector<ButtonInteraction>>(buttonCollector);
 
   // Verify that select menus interaction are inferred.
   const selectMenuCollector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU' });
   assertType<Promise<SelectMenuInteraction>>(message.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
+  assertType<Promise<SelectMenuInteraction>>(channel.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
   assertType<InteractionCollector<SelectMenuInteraction>>(selectMenuCollector);
 
   // Verify that message component interactions are default collected types.
   const defaultCollector = message.createMessageComponentCollector();
   assertType<Promise<MessageComponentInteraction>>(message.awaitMessageComponent());
+  assertType<Promise<MessageComponentInteraction>>(channel.awaitMessageComponent());
   assertType<InteractionCollector<MessageComponentInteraction>>(defaultCollector);
 
   // Verify that additional options don't affect default collector types.
   const semiDefaultCollector = message.createMessageComponentCollector({ time: 10000 });
   assertType<InteractionCollector<MessageComponentInteraction>>(semiDefaultCollector);
+  const semiDefaultCollectorChannel = message.createMessageComponentCollector({ time: 10000 });
+  assertType<InteractionCollector<MessageComponentInteraction>>(semiDefaultCollectorChannel);
 
   // Verify that interaction collector options can't be used.
 
@@ -557,6 +559,29 @@ client.on('messageCreate', message => {
   });
 
   message.awaitMessageComponent({
+    componentType: 'SELECT_MENU',
+    filter: i => {
+      assertType<SelectMenuInteraction>(i);
+      return true;
+    },
+  });
+
+  channel.awaitMessageComponent({
+    filter: i => {
+      assertType<MessageComponentInteraction>(i);
+      return true;
+    },
+  });
+
+  channel.awaitMessageComponent({
+    componentType: 'BUTTON',
+    filter: i => {
+      assertType<ButtonInteraction>(i);
+      return true;
+    },
+  });
+
+  channel.awaitMessageComponent({
     componentType: 'SELECT_MENU',
     filter: i => {
       assertType<SelectMenuInteraction>(i);
@@ -752,9 +777,10 @@ declare const applicationSubCommandData: ApplicationCommandSubCommandData;
   assertType<'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND>(applicationSubCommandData.type);
 
   // Check that only subcommands can have no subcommand or subcommand group sub-options.
-  assertType<(ApplicationCommandChoicesData | ApplicationCommandNonOptionsData)[] | undefined>(
-    applicationSubCommandData.options,
-  );
+  assertType<
+    | (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData | ApplicationCommandChannelOptionData)[]
+    | undefined
+  >(applicationSubCommandData.options);
 }
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;
@@ -825,7 +851,82 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
+  if (interaction.inCachedGuild()) {
+    assertType<GuildMember>(interaction.member);
+  } else if (interaction.inRawGuild()) {
+    assertType<APIInteractionGuildMember>(interaction.member);
+  } else {
+    assertType<APIGuildMember | GuildMember | null>(interaction.member);
+  }
+
+  if (interaction.isContextMenu()) {
+    assertType<ContextMenuInteraction>(interaction);
+    if (interaction.inCachedGuild()) {
+      assertType<ContextMenuInteraction>(interaction);
+      assertType<Guild>(interaction.guild);
+    } else if (interaction.inRawGuild()) {
+      assertType<ContextMenuInteraction>(interaction);
+      assertType<null>(interaction.guild);
+    } else if (interaction.inGuild()) {
+      assertType<ContextMenuInteraction>(interaction);
+      assertType<Guild | null>(interaction.guild);
+    }
+  }
+
+  if (interaction.isButton()) {
+    assertType<ButtonInteraction>(interaction);
+    if (interaction.inCachedGuild()) {
+      assertType<ButtonInteraction>(interaction);
+      assertType<Guild>(interaction.guild);
+    } else if (interaction.inRawGuild()) {
+      assertType<ButtonInteraction>(interaction);
+      assertType<null>(interaction.guild);
+    } else if (interaction.inGuild()) {
+      assertType<ButtonInteraction>(interaction);
+      assertType<Guild | null>(interaction.guild);
+    }
+  }
+
+  if (interaction.isMessageComponent()) {
+    assertType<MessageComponentInteraction>(interaction);
+    if (interaction.inCachedGuild()) {
+      assertType<MessageComponentInteraction>(interaction);
+      assertType<Guild>(interaction.guild);
+    } else if (interaction.inRawGuild()) {
+      assertType<MessageComponentInteraction>(interaction);
+      assertType<null>(interaction.guild);
+    } else if (interaction.inGuild()) {
+      assertType<MessageComponentInteraction>(interaction);
+      assertType<Guild | null>(interaction.guild);
+    }
+  }
+
+  if (interaction.isSelectMenu()) {
+    assertType<SelectMenuInteraction>(interaction);
+    if (interaction.inCachedGuild()) {
+      assertType<SelectMenuInteraction>(interaction);
+      assertType<Guild>(interaction.guild);
+    } else if (interaction.inRawGuild()) {
+      assertType<SelectMenuInteraction>(interaction);
+      assertType<null>(interaction.guild);
+    } else if (interaction.inGuild()) {
+      assertType<SelectMenuInteraction>(interaction);
+      assertType<Guild | null>(interaction.guild);
+    }
+  }
+
   if (interaction.isCommand()) {
+    if (interaction.inRawGuild()) {
+      assertType<CommandInteraction>(interaction);
+      assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
+    } else if (interaction.inCachedGuild()) {
+      assertType<CommandInteraction>(interaction);
+      assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
+    } else {
+      assertType<CommandInteraction>(interaction);
+      assertType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
+    }
+
     assertType<CommandInteraction>(interaction);
     assertType<CommandInteractionOptionResolver>(interaction.options);
     assertType<readonly CommandInteractionOption[]>(interaction.options.data);

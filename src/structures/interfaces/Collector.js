@@ -1,6 +1,6 @@
 'use strict';
 
-const EventEmitter = require('events');
+const EventEmitter = require('node:events');
 const Collection = require('../../util/Collection');
 const { TypeError } = require('../../errors');
 const Util = require('../../util/Util');

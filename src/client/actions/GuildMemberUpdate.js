@@ -11,7 +11,7 @@ class GuildMemberUpdateAction extends Action {
       const user = client.users.cache.get(data.user.id);
       if (!user) {
         client.users._add(data.user);
-      } else if (!user.equals(data.user)) {
+      } else if (!user._equals(data.user)) {
         const { old, updated } = client.actions.UserUpdate.handle(data.user);
         client.emit(Events.USER_UPDATE, old, updated);
       }

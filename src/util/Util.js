@@ -1,6 +1,6 @@
 'use strict';
 
-const { parse } = require('path');
+const { parse } = require('node:path');
 const Collection = require('./Collection');
 const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
@@ -309,7 +309,7 @@ class Util extends null {
     if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
     const { id, name, animated } = emoji;
     if (!id && !name) return null;
-    return { id, name, animated };
+    return { id, name, animated: Boolean(animated) };
   }
 
   /**
@@ -657,11 +657,11 @@ class Util extends null {
    * @returns {Object}
    */
   static makePartial(obj) {
-    Object.defineProperty(obj, "partial", {
+    Object.defineProperty(obj, 'partial', {
       value: true,
       configurable: true,
       writable: true,
-      enumerable: true
+      enumerable: true,
     });
   }
 
@@ -674,7 +674,7 @@ class Util extends null {
    */
   static getOrCreateGuild(client, id, shardId) {
     let guild = client.guilds.cache.get(id);
-    if(!guild) {
+    if (!guild) {
       guild = client.guilds._add({ id, shardId }, false);
       guild.partial = true;
     }
@@ -690,7 +690,7 @@ class Util extends null {
    */
   static getOrCreateChannel(client, id, guild) {
     let channel = client.channels.cache.get(id);
-    if(!channel) {
+    if (!channel) {
       channel = client.channels._add({ id, type: guild ? 0 : 1 }, guild, { cache: false });
       makePartial(channel);
     }
@@ -706,12 +706,15 @@ class Util extends null {
    */
   static getOrCreateMessage(channel, id) {
     let message = channel.messages.cache.get(id);
-    if(!message) {
-      message = channel.messages._add({
-        id,
-        channel_id: channel.id,
-        guild_id: channel.guild?.id
-      }, false);
+    if (!message) {
+      message = channel.messages._add(
+        {
+          id,
+          channel_id: channel.id,
+          guild_id: channel.guild?.id,
+        },
+        false,
+      );
     }
     return message;
   }
