@@ -339,7 +339,7 @@ export class BaseGuildEmoji extends Emoji {
 }
 
 export class BaseGuildTextChannel extends TextBasedChannel(GuildChannel) {
-  protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
+  public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   public messages: MessageManager;
   public nsfw: boolean;
@@ -360,7 +360,7 @@ export class BaseGuildTextChannel extends TextBasedChannel(GuildChannel) {
 }
 
 export class BaseGuildVoiceChannel extends GuildChannel {
-  protected constructor(guild: Guild, data?: RawGuildChannelData);
+  public constructor(guild: Guild, data?: RawGuildChannelData);
   public readonly members: Collection<Snowflake, GuildMember>;
   public readonly full: boolean;
   public readonly joinable: boolean;
@@ -403,7 +403,7 @@ export class BitField<S extends string, N extends number | bigint = number> {
 }
 
 export class ButtonInteraction extends MessageComponentInteraction {
-  private constructor(client: Client, data: RawMessageButtonInteractionData);
+  public constructor(client: Client, data: RawMessageButtonInteractionData);
   public componentType: 'BUTTON';
 }
 
@@ -703,7 +703,7 @@ export class DiscordAPIError extends Error {
 }
 
 export class DMChannel extends TextBasedChannel(Channel, ['bulkDelete']) {
-  private constructor(client: Client, data?: RawDMChannelData);
+  public constructor(client: Client, data?: RawDMChannelData);
   public messages: MessageManager;
   public recipient: User;
   public type: 'DM';
@@ -725,7 +725,7 @@ export class Emoji extends Base {
 }
 
 export class Guild extends AnonymousGuild {
-  private constructor(client: Client, data: RawGuildData);
+  public constructor(client: Client, data: RawGuildData);
   private _sortedRoles(): Collection<Snowflake, Role>;
   private _sortedChannels(channel: Channel): Collection<Snowflake, GuildChannel>;
 
@@ -915,7 +915,7 @@ export abstract class GuildChannel extends Channel {
 }
 
 export class GuildEmoji extends BaseGuildEmoji {
-  private constructor(client: Client, data: RawGuildEmojiData, guild: Guild);
+  public constructor(client: Client, data: RawGuildEmojiData, guild: Guild);
   private _roles: Snowflake[];
 
   public readonly deletable: boolean;
@@ -931,7 +931,7 @@ export class GuildEmoji extends BaseGuildEmoji {
 }
 
 export class GuildMember extends PartialTextBasedChannel(Base) {
-  private constructor(client: Client, data: RawGuildMemberData, guild: Guild);
+  public constructor(client: Client, data: RawGuildMemberData, guild: Guild);
   public avatar: string | null;
   public readonly bannable: boolean;
   public deleted: boolean;
@@ -1100,7 +1100,7 @@ export interface GuildInteraction<Cached extends GuildCacheState = GuildCacheSta
 }
 
 export class Interaction extends Base {
-  protected constructor(client: Client, data: RawInteractionData);
+  public constructor(client: Client, data: RawInteractionData);
   public applicationId: Snowflake;
   public readonly channel: TextBasedChannels | null;
   public channelId: Snowflake | null;
@@ -1266,7 +1266,7 @@ type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | Message
     >;
 
 export class Message extends Base {
-  private constructor(client: Client, data: RawMessageData);
+  public constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData | RawMessageData): void;
 
   public activity: MessageActivity | null;
@@ -1408,7 +1408,7 @@ export class MessageCollector extends Collector<Snowflake, Message> {
 }
 
 export class MessageComponentInteraction extends Interaction {
-  protected constructor(client: Client, data: RawMessageComponentInteractionData);
+  public constructor(client: Client, data: RawMessageComponentInteractionData);
   public readonly channel: TextBasedChannels | null;
   public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent> | null;
   public componentType: Exclude<MessageComponentType, 'ACTION_ROW'>;
@@ -1535,7 +1535,7 @@ export class MessagePayload {
 }
 
 export class MessageReaction {
-  private constructor(client: Client, data: RawMessageReactionData, message: Message);
+  public constructor(client: Client, data: RawMessageReactionData, message: Message);
   private _emoji: GuildEmoji | ReactionEmoji;
 
   public readonly client: Client;
@@ -1626,7 +1626,7 @@ export class Permissions extends BitField<PermissionString, bigint> {
 }
 
 export class Presence extends Base {
-  protected constructor(client: Client, data?: RawPresenceData);
+  public constructor(client: Client, data?: RawPresenceData);
   public activities: Activity[];
   public clientStatus: ClientPresenceStatusData | null;
   public guild: Guild | null;
@@ -1684,7 +1684,7 @@ export class RichPresenceAssets {
 }
 
 export class Role extends Base {
-  private constructor(client: Client, data: RawRoleData, guild: Guild);
+  public constructor(client: Client, data: RawRoleData, guild: Guild);
   public color: number;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -1869,7 +1869,7 @@ export class StageInstance extends Base {
 }
 
 export class Sticker extends Base {
-  private constructor(client: Client, data: RawStickerData);
+  public constructor(client: Client, data: RawStickerData);
   public readonly createdTimestamp: number;
   public readonly createdAt: Date;
   public available: boolean | null;
@@ -1895,7 +1895,7 @@ export class Sticker extends Base {
 }
 
 export class StickerPack extends Base {
-  private constructor(client: Client, data: RawStickerPackData);
+  public constructor(client: Client, data: RawStickerPackData);
   public readonly createdTimestamp: number;
   public readonly createdAt: Date;
   public bannerId: Snowflake;
@@ -1910,7 +1910,7 @@ export class StickerPack extends Base {
 }
 
 export class StoreChannel extends GuildChannel {
-  private constructor(guild: Guild, data?: RawGuildChannelData, client?: Client);
+  public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client);
   public createInvite(options?: CreateInviteOptions): Promise<Invite>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
   public nsfw: boolean;
@@ -1958,7 +1958,7 @@ export class TextChannel extends BaseGuildTextChannel {
 }
 
 export class ThreadChannel extends TextBasedChannel(Channel) {
-  private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client, fromInteraction?: boolean);
+  public constructor(guild: Guild, data?: RawThreadChannelData, client?: Client, fromInteraction?: boolean);
   public archived: boolean | null;
   public readonly archivedAt: Date | null;
   public archiveTimestamp: number | null;
@@ -2004,7 +2004,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
 }
 
 export class ThreadMember extends Base {
-  private constructor(thread: ThreadChannel, data?: RawThreadMemberData);
+  public constructor(thread: ThreadChannel, data?: RawThreadMemberData);
   public flags: ThreadMemberFlags;
   public readonly guildMember: GuildMember | null;
   public id: Snowflake;
@@ -2036,7 +2036,7 @@ export class Typing extends Base {
 }
 
 export class User extends PartialTextBasedChannel(Base) {
-  protected constructor(client: Client, data: RawUserData);
+  public constructor(client: Client, data: RawUserData);
   private _equals(user: APIUser): boolean;
 
   public accentColor: number | null | undefined;
@@ -2157,7 +2157,7 @@ export class VoiceRegion {
 }
 
 export class VoiceState extends Base {
-  private constructor(guild: Guild, data: RawVoiceStateData);
+  public constructor(guild: Guild, data: RawVoiceStateData);
   public readonly channel: VoiceChannel | StageChannel | null;
   public channelId: Snowflake | null;
   public readonly deaf: boolean | null;
@@ -2325,7 +2325,7 @@ export class WidgetMember extends Base {
 }
 
 export class WelcomeChannel extends Base {
-  private constructor(guild: Guild, data: RawWelcomeChannelData);
+  public constructor(guild: Guild, data: RawWelcomeChannelData);
   private _emoji: Omit<APIEmoji, 'animated'>;
   public channelId: Snowflake;
   public guild: Guild | InviteGuild;
