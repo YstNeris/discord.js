@@ -2,6 +2,7 @@
 
 /**
  * An extendable structure:
+ * * **`AutocompleteInteraction`**
  * * **`ButtonInteraction`**
  * * **`CategoryChannel`**
  * * **`CommandInteraction`**
@@ -83,6 +84,7 @@ class Structures extends null {
 }
 
 const structures = {
+  AutocompleteInteraction: require('../structures/AutocompleteInteraction'),
   ButtonInteraction: require('../structures/ButtonInteraction'),
   CategoryChannel: require('../structures/CategoryChannel'),
   CommandInteraction: require('../structures/CommandInteraction'),

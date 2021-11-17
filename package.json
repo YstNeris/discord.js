@@ -49,13 +49,8 @@
   },
   "homepage": "https://discord.js.org",
   "dependencies": {
-<<<<<<< HEAD
-    "@discordjs/builders": "^0.6.0",
-    "@discordoo/collection": "^1.0.11",
-=======
     "@discordjs/builders": "^0.8.1",
-    "@discordjs/collection": "^0.3.2",
->>>>>>> c0ba2d46d0796c95598673f77f04b180280afb57
+    "@discordoo/collection": "^1.0.11",
     "@discordjs/form-data": "^3.0.1",
     "@sapphire/async-queue": "^1.1.8",
     "@types/node-fetch": "^2.5.12",

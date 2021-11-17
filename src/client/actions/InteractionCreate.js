@@ -49,8 +49,8 @@ class InteractionCreateAction extends Action {
       default:
         client.emit(Events.DEBUG, `[INTERACTION] Received interaction with unknown type: ${data.type}`);
         return;
-      }
-      client.emit(Events.INTERACTION_CREATE, new InteractionType(client, data));
+    }
+    client.emit(Events.INTERACTION_CREATE, new InteractionType(client, data));
   }
 }
 

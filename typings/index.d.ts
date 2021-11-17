@@ -4113,6 +4113,7 @@ export interface EscapeMarkdownOptions {
 export type ExplicitContentFilterLevel = keyof typeof ExplicitContentFilterLevels;
 
 interface Extendable {
+  AutocompleteInteraction: typeof AutocompleteInteraction;
   ButtonInteraction: typeof ButtonInteraction;
   CategoryChannel: typeof CategoryChannel;
   CommandInteraction: typeof CommandInteraction;
