@@ -137,7 +137,11 @@ class Guild extends AnonymousGuild {
     this.id = data.id;
     if ('name' in data) this.name = data.name;
     if ('icon' in data) this.icon = data.icon;
-    if ('unavailable' in data) this.available = !data.unavailable;
+    if ('unavailable' in data) {
+      this.available = !data.unavailable;
+    } else {
+      this.available ??= true;
+    }
 
     if ('discovery_splash' in data) {
       /**
@@ -501,16 +505,9 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Options used to fetch the owner of a guild or a thread.
-   * @typedef {Object} FetchOwnerOptions
-   * @property {boolean} [cache=true] Whether or not to cache the fetched member
-   * @property {boolean} [force=false] Whether to skip the cache check and request the API
-   */
-
-  /**
    * Fetches the owner of the guild.
    * If the member object isn't needed, use {@link Guild#ownerId} instead.
-   * @param {FetchOwnerOptions} [options] The options for fetching the member
+   * @param {BaseFetchOptions} [options] The options for fetching the member
    * @returns {Promise<GuildMember>}
    */
   fetchOwner(options) {
@@ -663,8 +660,8 @@ class Guild extends AnonymousGuild {
    */
 
   /**
-   * Fetches the vanity url invite object to this guild.
-   * Resolves with an object containing the vanity url invite code and the use count
+   * Fetches the vanity URL invite object to this guild.
+   * Resolves with an object containing the vanity URL invite code and the use count
    * @returns {Promise<Vanity>}
    * @example
    * // Fetch invite data
@@ -1087,7 +1084,8 @@ class Guild extends AnonymousGuild {
    * @example
    * // Edit the guild owner
    * guild.setOwner(guild.members.cache.first())
-   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.displayName}`))
+   *  .then(guild => guild.fetchOwner())
+   *  .then(owner => console.log(`Updated the guild owner to ${owner.displayName}`))
    *  .catch(console.error);
    */
   setOwner(owner, reason) {
@@ -1204,24 +1202,14 @@ class Guild extends AnonymousGuild {
    * <info>Only one channel's parent can be changed at a time</info>
    * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
+   * @deprecated Use {@link GuildChannelManager#setPositions} instead
    * @example
    * guild.setChannelPositions([{ channel: channelId, position: newChannelIndex }])
    *   .then(guild => console.log(`Updated channel positions for ${guild}`))
    *   .catch(console.error);
    */
-  async setChannelPositions(channelPositions) {
-    const updatedChannels = channelPositions.map(r => ({
-      id: this.client.channels.resolveId(r.channel),
-      position: r.position,
-      lock_permissions: r.lockPermissions,
-      parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveId(r.parent) : undefined,
-    }));
-
-    await this.client.api.guilds(this.id).channels.patch({ data: updatedChannels });
-    return this.client.actions.GuildChannelsPositionUpdate.handle({
-      guild_id: this.id,
-      channels: updatedChannels,
-    }).guild;
+  setChannelPositions(channelPositions) {
+    return this.channels.setPositions(channelPositions);
   }
 
   /**
@@ -1235,26 +1223,14 @@ class Guild extends AnonymousGuild {
    * Batch-updates the guild's role positions
    * @param {GuildRolePosition[]} rolePositions Role positions to update
    * @returns {Promise<Guild>}
+   * @deprecated Use {@link RoleManager#setPositions} instead
    * @example
    * guild.setRolePositions([{ role: roleId, position: updatedRoleIndex }])
    *  .then(guild => console.log(`Role positions updated for ${guild}`))
    *  .catch(console.error);
    */
-  async setRolePositions(rolePositions) {
-    // Make sure rolePositions are prepared for API
-    rolePositions = rolePositions.map(o => ({
-      id: this.roles.resolveId(o.role),
-      position: o.position,
-    }));
-
-    // Call the API to update role positions
-    await this.client.api.guilds(this.id).roles.patch({
-      data: rolePositions,
-    });
-    return this.client.actions.GuildRolesPositionUpdate.handle({
-      guild_id: this.id,
-      roles: rolePositions,
-    }).guild;
+  setRolePositions(rolePositions) {
+    return this.roles.setPositions(rolePositions);
   }
 
   /**
