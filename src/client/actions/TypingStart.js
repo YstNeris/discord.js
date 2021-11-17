@@ -2,7 +2,7 @@
 
 const Action = require('./Action');
 const Typing = require('../../structures/Typing');
-const { Events, TextBasedChannelTypes } = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 const Util = require('../../util/Util');
 
 class TypingStart extends Action {
@@ -11,7 +11,8 @@ class TypingStart extends Action {
     const guild = data.guild_id ? Util.getOrCreateGuild(client, data.guild_id, data.shardId) : void 0;
     const channel = Util.getOrCreateChannel(client, data.channel_id, guild);
     if (!channel) return;
-    if (!TextBasedChannelTypes.includes(channel.type)) {
+
+    if (!channel.isText()) {
       this.client.emit(Events.WARN, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
       return;
     }
